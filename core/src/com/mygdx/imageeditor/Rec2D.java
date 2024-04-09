@@ -10,16 +10,18 @@ public class Rec2D {
     public Vector2 Position;
     public Texture RecTexture;
     private Pixmap _pixelMap;
-    private Color _recColor;
+    protected Color _recColor;
 
     Rec2D(Vector2 scale, Vector2 position, Color color) {
         Scale = scale;
         Position = position;
         _recColor = color;
         generateTexture();
+        ImageEditor.Instance.Rectangles.add(this);
     }
 
-    private void generateTexture() {
+    protected void generateTexture() {
+        if (RecTexture != null) RecTexture.dispose(); // dispose of old texture to save memory 
         _pixelMap = new Pixmap((int) Scale.x, (int) Scale.y, Pixmap.Format.RGBA8888);
         _pixelMap.setColor(_recColor);
         for(int x = 0; x < _pixelMap.getWidth(); x++) {
