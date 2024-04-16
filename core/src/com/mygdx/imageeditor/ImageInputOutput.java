@@ -28,7 +28,7 @@ public class ImageInputOutput {
         int height = Util.bytesToInt(heightBytes);
         int bytesPerPixel = Util.bytesToInt(bitsPerPixel) / 8;
         if (bytesPerPixel != 3) {
-            System.out.println("Unsupported image pixel format. Incorrect bits per pixel");
+            System.out.println("Unsupported image pixel format. Incorrect bits per pixel.");
             return null;
         }
         Pixmap pixels = new Pixmap(width, height, Format.RGBA8888);
@@ -36,7 +36,7 @@ public class ImageInputOutput {
         int x = 0;
         int y = height;
         for (int i = startPoint; i < bytes.length - 3; i += 3) {
-            if (x > width) {
+            if (x >= width) {
                 x = 0;
                 y -= 1;
             }
