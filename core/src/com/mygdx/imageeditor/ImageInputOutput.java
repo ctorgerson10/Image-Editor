@@ -13,16 +13,17 @@ public class ImageInputOutput {
     }
 
     public Pixmap loadImage(String filePath) {
-        byte[] bytes = Gdx.files.internal(filePath).readBytes();
-        if (bytes[0] != 'B' || bytes[1] != 'M') {
+        byte[] fileBytes = Gdx.files.internal(filePath).readBytes();
+        int[] fileIntData = Util.unsignBytes(fileBytes);
+        if (fileBytes[0] != 'B' || fileBytes[1] != 'M') {
             System.out.println(filePath + " is NOT a bitmap image");
             return null;
         }
-        byte[] fileSize = { bytes[2], bytes[3], bytes[4], bytes[5] };
-        byte[] start = { bytes[10], bytes[11], bytes[12], bytes[13] };
-        byte[] widthBytes = { bytes[18], bytes[19], bytes[20], bytes[21] };
-        byte[] heightBytes = { bytes[22], bytes[23], bytes[24], bytes[25] };
-        byte[] bitsPerPixel = { bytes[28], bytes[29] };
+        byte[] fileSize = { fileBytes[2], fileBytes[3], fileBytes[4], fileBytes[5] };
+        byte[] start = { fileBytes[10], fileBytes[11], fileBytes[12], fileBytes[13] };
+        byte[] widthBytes = { fileBytes[18], fileBytes[19], fileBytes[20], fileBytes[21] };
+        byte[] heightBytes = { fileBytes[22], fileBytes[23], fileBytes[24], fileBytes[25] };
+        byte[] bitsPerPixel = { fileBytes[28], fileBytes[29] };
         int startPoint = Util.bytesToInt(start);
         int width = Util.bytesToInt(widthBytes);
         int height = Util.bytesToInt(heightBytes);
@@ -32,17 +33,17 @@ public class ImageInputOutput {
             return null;
         }
         Pixmap pixels = new Pixmap(width, height, Format.RGBA8888);
-        byte r, g, b;
+        int r, g, b;
         int x = 0;
         int y = height;
-        for (int i = startPoint; i < bytes.length - 3; i += 3) {
+        for (int i = startPoint; i < fileIntData.length - 3; i += 3) {
             if (x >= width) {
                 x = 0;
                 y -= 1;
             }
-            r = bytes[i];
-            g = bytes[i + 1];
-            b = bytes[i + 2];
+            b = fileIntData[i];
+            g = fileIntData[i + 1];
+            r = fileIntData[i + 2];
             pixels.setColor(r / 256f, g / 256f, b / 256f, 1);
             pixels.drawPixel(x, y);
             x += 1;
