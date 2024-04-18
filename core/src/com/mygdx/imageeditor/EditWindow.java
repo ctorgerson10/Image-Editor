@@ -5,20 +5,21 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
 public class EditWindow extends Rec2D implements IClickable {
 
     public Texture DoodleTexture;
-    private Pixmap _doodleMap;
+    public Pixmap DoodleMap;
     private Vector2 _previousPaintPosition;
+    public static EditWindow Instance;
 
-    public EditWindow(Vector2 scale, Vector2 position, Color backgroundColor) {
-        super(scale, position, backgroundColor);
+    public EditWindow(Vector2 scale, Vector2 position) {
+        super(scale, position, Color.GRAY);
+        Instance = this;
         InputManager.Instance.Clickables.add(this);
-        _doodleMap = new Pixmap((int) scale.x, (int) scale.y, Format.RGBA8888);
-        _doodleMap.setColor(Color.ORANGE);
-        DoodleTexture = new Texture(_doodleMap);
+        DoodleMap = new Pixmap((int) scale.x, (int) scale.y, Format.RGBA8888);
+        DoodleMap.setColor(Color.ORANGE);
+        DoodleTexture = new Texture(DoodleMap);
     }
 
     public void paintAtPosition(Vector2 worldPosition) {
@@ -28,13 +29,13 @@ public class EditWindow extends Rec2D implements IClickable {
         int startY = (int) _previousPaintPosition.y;
         int endX = (int) paintPosition.x;
         int endY = (int) paintPosition.y;
-        _doodleMap.drawLine(startX, startY, endX, endY);
-        _doodleMap.drawLine(startX + 1, startY, endX + 1, endY);
-        _doodleMap.drawLine(startX - 1, startY, endX - 1, endY);
-        _doodleMap.drawLine(startX, startY + 1, endX, endY + 1);
-        _doodleMap.drawLine(startX, startY - 1, endX, endY - 1);
+        DoodleMap.drawLine(startX, startY, endX, endY);
+        DoodleMap.drawLine(startX + 1, startY, endX + 1, endY);
+        DoodleMap.drawLine(startX - 1, startY, endX - 1, endY);
+        DoodleMap.drawLine(startX, startY + 1, endX, endY + 1);
+        DoodleMap.drawLine(startX, startY - 1, endX, endY - 1);
         _previousPaintPosition = paintPosition;
-        DoodleTexture = new Texture(_doodleMap);
+        DoodleTexture = new Texture(DoodleMap);
     }
 
     public void onClickDown(Vector2 position) {

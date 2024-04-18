@@ -1,8 +1,11 @@
 package com.mygdx.imageeditor;
 
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+
+import java.io.IOException;
 
 public class InputManager implements InputProcessor {
     public Array<IHoverable> Hoverables = new Array<IHoverable>();
@@ -11,12 +14,25 @@ public class InputManager implements InputProcessor {
     private IHoverable _currentlyHovered;
     private IHoverable _lastHovered;
     private IClickable _currentlyClicked;
+    private boolean _controlPressed = false;
 
     InputManager() {
         Instance = this;
     }
-    public boolean keyDown(int i) { return false; }
-    public boolean keyUp(int i) { return false; }
+    public boolean keyDown(int keycode) {
+        if(_controlPressed && keycode == Input.Keys.S)
+            try {
+                ImageInputOutput.Instance.saveImage("C:\\Users\\ctorg\\OneDrive\\Desktop\\output.bmp");
+                System.out.println("Saved image to C:\\Users\\ctorg\\OneDrive\\Desktop\\output.bmp");
+            }
+            catch (IOException e) {e.printStackTrace();}
+        if(keycode == Input.Keys.CONTROL_LEFT) _controlPressed = true;
+        return false;
+    }
+    public boolean keyUp(int keycode) {
+        if(keycode == Input.Keys.CONTROL_LEFT) _controlPressed = false;
+        return false;
+    }
     public boolean keyTyped(char c) { return false; }
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         IClickable collision = CollisionManager.Instance.getClicked(new Vector2(screenX, ImageEditor.Instance.ScreenSize.y - screenY));
