@@ -1,9 +1,10 @@
-package com.mygdx.imageeditor;
+package com.mygdx.utility;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.mygdx.imageeditor.ImageEditor;
 
 import java.io.IOException;
 
@@ -16,17 +17,24 @@ public class InputManager implements InputProcessor {
     private IClickable _currentlyClicked;
     private boolean _controlPressed = false;
 
-    InputManager() {
+    public InputManager() {
         Instance = this;
     }
     public boolean keyDown(int keycode) {
-        if(_controlPressed && keycode == Input.Keys.S)
-            try {
-                ImageInputOutput.Instance.saveImage("C:\\Users\\ctorg\\OneDrive\\Desktop\\output.bmp");
-                System.out.println("Saved image to C:\\Users\\ctorg\\OneDrive\\Desktop\\output.bmp");
+        if (_controlPressed && keycode == Input.Keys.S) {
+            if (ImageInputOutput.Instance.ImageFolderLocation == null) {
+                return false;
             }
-            catch (IOException e) {e.printStackTrace();}
-        if(keycode == Input.Keys.CONTROL_LEFT) _controlPressed = true;
+            try {
+                ImageInputOutput.Instance.saveImage(ImageInputOutput.Instance.ImageFolderLocation + "\\output.bmp");
+                System.out.println("Saved image to " + ImageInputOutput.Instance.ImageFolderLocation + "\\output.bmp");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        if (keycode == Input.Keys.CONTROL_LEFT) {
+            _controlPressed = true;
+        }
         return false;
     }
     public boolean keyUp(int keycode) {
@@ -55,7 +63,7 @@ public class InputManager implements InputProcessor {
         } 
         return true;
     }
-    public boolean mouseMoved(int screenX, int screenY) { 
+    public boolean mouseMoved(int screenX, int screenY) {
         _currentlyHovered = CollisionManager.Instance.getHovered(new Vector2(screenX, ImageEditor.Instance.ScreenSize.y - screenY));
         if (_currentlyHovered != null) {
             _currentlyHovered.onHovered();
